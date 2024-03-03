@@ -74,16 +74,12 @@ def chunk_text(text, chunk_size=1000):
     current_chunk = ""
 
     for word in words:
-        # Check if adding the word to the current chunk would exceed the chunk size
         if len(current_chunk) + len(word) + 1 > chunk_size:
-            # If so, add the current chunk to the chunks list and start a new chunk with the current word
             chunks.append(current_chunk.strip())
             current_chunk = word
         else:
-            # Otherwise, add the word to the current chunk
             current_chunk += f" {word}"
 
-    # Add the last chunk to the chunks list
     if current_chunk:
         chunks.append(current_chunk.strip())
 
@@ -91,7 +87,6 @@ def chunk_text(text, chunk_size=1000):
 def ingest_folder(folder_path, progress=True):
     context_chunks = []
 
-    # List all files in the folder
     file_paths = [
         os.path.join(folder_path, f)
         for f in os.listdir(folder_path)

@@ -68,21 +68,15 @@ def store_embeddings_in_pinecone(
     pinecone_env=PINCONE_ENV,
     data_frame=None,
 ):
-    # Initialize Pinecone
     pc = Pinecone(api_key=pinecone_api_key, environment=pinecone_env)
-
-    # Instantiate Pinecone's Index
     pinecone_index = pc.Index(name=index)
 
     if data_frame is not None and not data_frame.empty:
         batch_size = 80
         vectors_to_upsert = []
         batch_count = 0
-
-        # Calculate the total number of batches
         total_batches = -(-len(data_frame) // batch_size)
 
-        # Create a tqdm progress bar object
         progress_bar = tqdm(
             total=total_batches, desc="Loading info into Pinecone", position=0
         )
@@ -96,7 +90,6 @@ def store_embeddings_in_pinecone(
             metadata = {"context": context_chunk}
             vectors_to_upsert.append((pine_index, vector, metadata))
 
-            # Upsert when the batch is full or it's the last row
             if len(vectors_to_upsert) == batch_size or index == len(data_frame) - 1:
                 while True:
                     try:
@@ -107,7 +100,6 @@ def store_embeddings_in_pinecone(
                         batch_count += 1
                         vectors_to_upsert = []
 
-                        # Update the progress bar
                         progress_bar.update(1)
                         sys.stdout.flush()
                         break
@@ -118,7 +110,6 @@ def store_embeddings_in_pinecone(
                         )
                         time.sleep(10)
 
-        # Close the progress bar after completing all upserts
         progress_bar.close()
 
     else:
