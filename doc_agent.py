@@ -1,6 +1,10 @@
 import os, tiktoken, configparser, openai, chardet
 import pandas as pd
-from openai_pincone_utils import create_embeddings_dataframe,store_embeddings_in_pinecone
+from openai_pincone_utils import (
+    create_embeddings_dataframe,
+    store_embeddings_in_pinecone,
+)
+
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
 
 
@@ -68,6 +72,8 @@ def ingester(file_path):
     else:
         print(f"Unsupported file type: {extension}")
         return ""
+
+
 def chunk_text(text, chunk_size=1000):
     words = text.split()
     chunks = []
@@ -84,6 +90,8 @@ def chunk_text(text, chunk_size=1000):
         chunks.append(current_chunk.strip())
 
     return chunks
+
+
 def ingest_folder(folder_path, progress=True):
     context_chunks = []
 
@@ -109,11 +117,11 @@ def ingest_folder(folder_path, progress=True):
 
     return context_chunks
 
+
 def add_documents():
-    doc_chunks = ingest_folder('./data')
+    doc_chunks = ingest_folder("./data")
     doc_df = create_embeddings_dataframe(doc_chunks)
     store_embeddings_in_pinecone(data_frame=doc_df)
     print("Documents added to Pinecone")
 
-add_documents()
 

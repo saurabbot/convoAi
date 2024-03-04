@@ -114,3 +114,32 @@ def store_embeddings_in_pinecone(
 
     else:
         print("No dataframe to retrieve embeddings")
+
+
+def query_db(
+    pinecone_api_key=PINCONE_API_KEY,
+    pinecone_env=PINCONE_ENV,
+    index_name=PINCONE_INDEX_NAME,
+):
+    from langchain_community.embeddings import OpenAIEmbeddings
+    from langchain.chat_models.openai import ChatOpenAI
+    from langchain.vectorstores.pinecone import Pinecone as pinecone
+    from langchain.chains import RetrievalQAWithSourcesChain
+
+    llm = ChatOpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        model="gpt-3.5-turbo",
+    )
+    embed = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"))
+    pc = Pinecone(api_key=pinecone_api_key, environment=pinecone_env)
+    text_field = "text"
+    index = pc.Index(index_name)
+    vectorstore = pinecone(index, embed.embed_query, text_field)
+    print("Vectorstore created")
+    qa = RetrievalQAWithSourcesChain.from_chain_type(
+        llm=llm, chain_type="stuff", retriever=vectorstore.as_retriever()
+    )
+    res = qa("What is id assigned to saurabh?")
+    print(res)
+
+query_db()
