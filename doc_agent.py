@@ -124,4 +124,5 @@ def add_documents():
     store_embeddings_in_pinecone(data_frame=doc_df)
     print("Documents added to Pinecone")
 
+add_documents()
 

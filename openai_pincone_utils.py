@@ -1,4 +1,4 @@
-import tiktoken, configparser, openai, pinecone, os
+import tiktoken, openai, pinecone, os
 from openai.error import RateLimitError, InvalidRequestError, APIError
 import time
 import pandas as pd
@@ -6,7 +6,6 @@ from tqdm.auto import tqdm
 import sys
 from pinecone import Pinecone, ServerlessSpec
 
-import asyncio
 
 
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
@@ -17,7 +16,6 @@ EMBEDDING_MODEL = "text-embedding-ada-002"
 PINCONE_API_KEY = os.getenv("PINCONE_API_KEY")
 PINCONE_INDEX_NAME = os.getenv("PINECONE_INDEX")
 PINCONE_ENV = os.getenv("PINCONE_ENV")
-
 
 def count_tokens(text):
     tokens = len(encoding.encode(text))
@@ -139,7 +137,7 @@ def query_db(
     qa = RetrievalQAWithSourcesChain.from_chain_type(
         llm=llm, chain_type="stuff", retriever=vectorstore.as_retriever()
     )
-    res = qa("What is id assigned to saurabh?")
+    res = qa("What is the total count of activity units in the Agriculture, Forestry and Fishing industry in 2011?")
     print(res)
 
 query_db()

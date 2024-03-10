@@ -1,9 +1,7 @@
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
-# from langchain.llms.openai import OpenAI
-from src.utils.data_ingester import ingest_data
 
-ingest_data()
+# from langchain.llms.openai import OpenAI
 
 
 # llm = OpenAI(api_key="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")
